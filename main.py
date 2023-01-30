@@ -1,5 +1,5 @@
-from aiogram import Bot, Dispatcher
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram import Bot
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
 import env
 import feed
@@ -8,8 +8,6 @@ import logging
 from urllib.parse import quote
 
 bot = Bot(env.BOT_TOKEN)
-dp = Dispatcher(bot)
-
 log = logging.getLogger(__name__)
 
 
@@ -19,11 +17,6 @@ def create_message(changeset: dict) -> str:
     text += f"{changeset['date']}\n"
     text += f"🟢 {changeset['create']} | 🟠 {changeset['modify']} | 🔴 {changeset['delete']}"
     return text
-
-
-@dp.message_handler(commands=["start"])
-async def start_command(message: Message):
-    await message.reply("Hello!")
 
 
 async def send_changeset(changeset: dict):
@@ -57,7 +50,6 @@ async def worker():
 async def main():
     loop = asyncio.get_running_loop()
     loop.create_task(worker())
-    await dp.start_polling()
 
 
 if __name__ == "__main__":
