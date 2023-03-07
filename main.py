@@ -22,19 +22,25 @@ def create_message(changeset: dict) -> str:
 
 
 async def send_changeset(changeset: dict):
-    osm_url = "https://www.openstreetmap.org"
 
-    changeset_url = f"{osm_url}/changeset/{quote(str(changeset['id']))}"
-    user_url = f"{osm_url}/user/{quote(changeset['user'])}"
+    changeset_url = f"https://www.openstreetmap.org/changeset/{changeset['id']}"
+    user_url = f"https://www.openstreetmap.org/user/{quote(changeset['user'])}"
+
+    achavi_url = f"https://overpass-api.de/achavi/?changeset={changeset['id']}"
+    osmcha_url = f"https://osmcha.org/changesets/{changeset['id']}"
 
     inline_keyboard = [[
-        InlineKeyboardButton("🌐 Changeset", url=changeset_url),
-        InlineKeyboardButton("👤 User", user_url)
+        InlineKeyboardButton("🌐 Changeset", changeset_url),
+        InlineKeyboardButton("👤 User", user_url),
+        InlineKeyboardButton("🌐 OSMCha", osmcha_url),
+        InlineKeyboardButton("🌐 Overpass", achavi_url)
     ]]
-    reply_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
+    reply_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     message = create_message(changeset)
-    await bot.send_message(env.CHANNEL_ID, message, reply_markup=reply_markup)
+
+    await bot.send_message(env.CHANNEL_ID, message, reply_markup=reply_markup,
+                           disable_web_page_preview=True)
 
 
 async def worker():
