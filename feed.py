@@ -1,9 +1,11 @@
-import database
-from datetime import datetime
-import feedparser
 import re
+from datetime import datetime
 from time import mktime
 from typing import Any
+
+import feedparser
+
+import database
 
 
 def new_changesets(feed_url: str) -> list[dict] | None:
@@ -29,14 +31,19 @@ def new_changesets(feed_url: str) -> list[dict] | None:
         changeset["user"] = re.search(r"by (.+)$", info.title).group(1)
 
         changeset["create"] = re.search(r"Create: ([0-9]+)", info.summary).group(1)
-        changeset["modify"]= re.search(r"Modify: ([0-9]+)", info.summary).group(1)
+        changeset["modify"] = re.search(r"Modify: ([0-9]+)", info.summary).group(1)
         changeset["delete"] = re.search(r"Delete: ([0-9]+)", info.summary).group(1)
 
         date = datetime.fromtimestamp(mktime(info.published_parsed))
         changeset["date"] = date.strftime("%Y-%m-%d | %H:%M:%S")
 
-        if not database.already_parsed(changeset["id"]):
-            changesets.append(changeset)
-            database.update_latest(changeset["id"])
+        parsed = False
+        while not parsed:
+            try:
+                if not database.already_parsed(changeset["id"]):
+                    changesets.append(changeset)
+                parsed = True
+            except:
+                pass
 
     return changesets
