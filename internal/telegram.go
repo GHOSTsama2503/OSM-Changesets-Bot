@@ -27,11 +27,12 @@ type Message struct {
 
 func SendToTelegram(changeset Changeset) error {
 
-	msgText := fmt.Sprintf("%s\n\n%s\n\n🟢 %s | 🟠 %s | 🔴 %s", changeset.Title, changeset.Description, changeset.Create, changeset.Modify, changeset.Delete)
+	date := changeset.Date.Format("2006-01-02 | 15:04:05")
+	msgText := fmt.Sprintf("%s\n\n%s\n\n%s\n🟢 %s | 🟠 %s | 🔴 %s", changeset.Title, changeset.Description, date, changeset.Create, changeset.Modify, changeset.Delete)
 
 	changesetBtn := InlineKeyboardButton{}
 	changesetBtn.Text = "🌐 Changeset"
-	changesetBtn.Url = fmt.Sprintf("https://www.openstreetmap.org/changeset/%s", changeset.Id)
+	changesetBtn.Url = fmt.Sprintf("https://www.openstreetmap.org/changeset/%d", changeset.Id)
 
 	userBtn := InlineKeyboardButton{}
 	userBtn.Text = "👤 User"
@@ -39,11 +40,11 @@ func SendToTelegram(changeset Changeset) error {
 
 	osmChaBtn := InlineKeyboardButton{}
 	osmChaBtn.Text = "🌐 OSMCha"
-	osmChaBtn.Url = fmt.Sprintf("https://osmcha.org/changesets/%s", changeset.Id)
+	osmChaBtn.Url = fmt.Sprintf("https://osmcha.org/changesets/%d", changeset.Id)
 
 	overPassBtn := InlineKeyboardButton{}
 	overPassBtn.Text = "🌐 Overpass"
-	overPassBtn.Url = fmt.Sprintf("https://overpass-api.de/achavi/?changeset=%s", changeset.Id)
+	overPassBtn.Url = fmt.Sprintf("https://overpass-api.de/achavi/?changeset=%d", changeset.Id)
 
 	var inline_keyboard [][]InlineKeyboardButton
 
