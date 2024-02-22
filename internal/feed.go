@@ -2,8 +2,11 @@ package internal
 
 import (
 	"errors"
+	"fmt"
 	"osm-changesets-bot/env"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/mmcdole/gofeed"
@@ -33,7 +36,15 @@ func NewChangesets(latest int) ([]Changeset, error) {
 			return changesets, errors.New("unexpected changeset title")
 		}
 
-		id := titleStart[1]
+		id, err := strconv.Atoi(titleStart[1])
+		if err != nil {
+			return changesets, fmt.Errorf("changeset id must be an integer: %w", err)
+		}
+
+		if id <= latest {
+			continue
+		}
+
 		splitedDescription := strings.Split(item.Description, "<br>")
 
 		descriptionParts := len(splitedDescription)
@@ -72,9 +83,11 @@ func NewChangesets(latest int) ([]Changeset, error) {
 		changeset.Modify = changes[2]
 		changeset.Delete = changes[3]
 		changeset.Username = username
+		changeset.Date = *item.PublishedParsed
 
 		changesets = append(changesets, changeset)
 	}
 
+	slices.Reverse(changesets)
 	return changesets, nil
 }

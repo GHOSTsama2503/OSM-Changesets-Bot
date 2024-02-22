@@ -3,7 +3,6 @@ package main
 import (
 	"osm-changesets-bot/env"
 	"osm-changesets-bot/internal"
-	"strconv"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -32,17 +31,14 @@ func main() {
 				break
 			}
 
-			idInt, err := strconv.Atoi(changeset.Id)
+			erro := internal.SetLatestChangesetId(changeset.Id)
 			if err != nil {
-				log.Error("changeset id must be an int", "id", changeset.Id, "err", err)
+				log.Error("error setting latest changeset", "id", changeset.Id, "err", erro)
 				break
 			}
 
-			err = internal.SetLatestChangesetId(idInt)
-			if err != nil {
-				log.Error("error setting latest changeset", "id", changeset.Id, "err", err)
-				break
-			}
+			// avoid flood
+			time.Sleep(5 * time.Second)
 		}
 
 		time.Sleep(time.Duration(env.TaskInterval) * time.Second)

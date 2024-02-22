@@ -16,6 +16,12 @@ type LatestChangeset struct {
 	ChangesetId int    `json:"changeset_id"`
 }
 
+type PutItems struct {
+	Set struct {
+		ChangesetId int `json:"changeset_id"`
+	} `json:"set"`
+}
+
 func apiUrl() (string, error) {
 	detaKey := strings.Split(env.DetaKey, "_")
 	if len(detaKey) != 2 {
@@ -24,7 +30,7 @@ func apiUrl() (string, error) {
 
 	collectionId := detaKey[0]
 
-	apiUrl := fmt.Sprintf("https://database.deta.sh/v1/%s/%s", collectionId, env.DetaBaseName)
+	apiUrl := fmt.Sprintf("https://database.deta.sh/v1/%s/%s/items/latest", collectionId, env.DetaBaseName)
 	return apiUrl, nil
 }
 
@@ -34,17 +40,17 @@ func SetLatestChangesetId(value int) error {
 		return err
 	}
 
-	latest := LatestChangeset{}
-	latest.ChangesetId = value
+	data := PutItems{}
+	data.Set.ChangesetId = value
 
-	data, err := json.Marshal(latest)
+	reqBody, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
 	client := http.Client{}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		return err
 	}
@@ -78,7 +84,6 @@ func GetLatestChangesetId() (int, error) {
 		return 0, err
 	}
 
-	url = url + "/items/latest"
 	client := http.Client{}
 
 	req, err := http.NewRequest("GET", url, nil)
