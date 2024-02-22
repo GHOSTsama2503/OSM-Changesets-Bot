@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
 )
 
@@ -51,21 +50,15 @@ func Load() {
 
 	taskInterval := os.Getenv("TASK_INTERVAL")
 	taskIntervalParsed, err := strconv.Atoi(taskInterval)
-
 	if err != nil {
-		TaskInterval = 1
-		log.Warnf("empty or invalid task interval, using default (%d)", TaskInterval)
-	} else {
-		TaskInterval = taskIntervalParsed
+		panic("task interval must be an integer")
 	}
+	TaskInterval = taskIntervalParsed
 
 	retryInterval := os.Getenv("RETRY_INTERVAL")
 	retryIntervalParsed, err := strconv.Atoi(retryInterval)
-
 	if err != nil {
-		RetryInterval = 1
-		log.Warnf("empty or invalid retry interval, using default (%d)", RetryInterval)
-	} else {
-		RetryInterval = retryIntervalParsed
+		panic("retry interval must be an integer")
 	}
+	RetryInterval = retryIntervalParsed
 }
