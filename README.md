@@ -1,4 +1,7 @@
-<h1 align="center"> OSM Changesets Bot</h1>
+<h1 align="center">🗺️ OSM Changesets Bot</h1>
+
+> [!NOTE]
+> The initial version (in Python) is still available in the [python branch](https://github.com/GHOSTsama2503/OSM-Changesets-Bot/tree/python)
 
 Easy way to see the [changesets](https://wiki.openstreetmap.org/wiki/Changeset) in a certain area in [Telegram](http://telegram.org). Send the messages directly to you, or create a channel and share it with other users.
 
