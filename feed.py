@@ -23,7 +23,9 @@ def new_changesets(feed_url: str) -> list[dict] | None:
         changeset["url"] = info.id
         changeset["title"] = info.title
 
-        changeset["summary"] = re.search(r"^(.+?)<br />", info.summary).group(1)
+        summary = re.search(r"^(.+?)<br />", info.summary)
+        changeset["summary"] = summary.group(1) if summary else ""
+
         changeset["user"] = re.search(r"by (.+)$", info.title).group(1)
 
         changeset["create"] = re.search(r"Create: ([0-9]+)", info.summary).group(1)
