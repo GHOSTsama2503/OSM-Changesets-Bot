@@ -1,13 +1,15 @@
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiohttp import ClientTimeout
 import asyncio
+import database
 import env
 import feed
 import logger
 import logging
 from urllib.parse import quote
 
-bot = Bot(env.BOT_TOKEN)
+bot = Bot(env.BOT_TOKEN, timeout=ClientTimeout(total=60 * 2))
 log = logging.getLogger(__name__)
 
 
@@ -37,20 +39,32 @@ async def send_changeset(changeset: dict):
 
 async def worker():
     while True:
-        new_changesets = feed.new_changesets(env.FEED_URL)
-        log.info(f"New Changesets: {len(new_changesets)}")
+        try:
+            new_changesets = feed.new_changesets(env.FEED_URL)
+            log.info(f"New Changesets: {len(new_changesets)}")
 
+        except:
+            log.error("Error getting changesets:", exc_info=True)
+            new_changesets = []
+
+        # if changesets
         for changeset in new_changesets:
-            await send_changeset(changeset)
-            await asyncio.sleep(3) # avoid flood
+            try:
+                await send_changeset(changeset)
+                database.update_latest(changeset["id"])
 
-        await asyncio.sleep(15 * 60) # task interval
+            except:
+                log.error(f"Error sending changeset, changeset_id={changeset.get('id')}", exc_info=True)
+                break
+
+            await asyncio.sleep(5) # avoid flood
+
+        await asyncio.sleep(env.TASK_INTERVAL)
 
 
 async def main():
     loop = asyncio.get_running_loop()
-    loop.create_task(worker())
-
+    await worker()
 
 if __name__ == "__main__":
     asyncio.run(main())
