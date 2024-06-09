@@ -1,6 +1,6 @@
 module osm-changesets-bot
 
-go 1.21.6
+go 1.22.0
 
 require (
 	github.com/charmbracelet/log v0.3.1
@@ -25,7 +25,7 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/net v0.16.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 )
