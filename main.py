@@ -29,12 +29,10 @@ async def send_changeset(changeset: dict):
     achavi_url = f"https://overpass-api.de/achavi/?changeset={changeset['id']}"
     osmcha_url = f"https://osmcha.org/changesets/{changeset['id']}"
 
-    inline_keyboard = [[
-        InlineKeyboardButton("🌐 Changeset", changeset_url),
-        InlineKeyboardButton("👤 User", user_url),
-        InlineKeyboardButton("🌐 OSMCha", osmcha_url),
-        InlineKeyboardButton("🌐 Overpass", achavi_url)
-    ]]
+    inline_keyboard = [
+        [InlineKeyboardButton("🌐 Changeset", changeset_url), InlineKeyboardButton("👤 User", user_url)],
+        [InlineKeyboardButton("🌐 OSMCha", osmcha_url), InlineKeyboardButton("🌐 Overpass", achavi_url)]
+    ]
 
     reply_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     message = create_message(changeset)
