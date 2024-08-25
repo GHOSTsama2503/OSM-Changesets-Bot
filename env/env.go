@@ -21,10 +21,7 @@ var (
 )
 
 func Load() {
-	err := godotenv.Load()
-	if err != nil {
-		panic("could not load the env file")
-	}
+	godotenv.Load()
 
 	BotToken = os.Getenv("BOT_TOKEN")
 	if len(BotToken) == 0 {

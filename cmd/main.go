@@ -11,8 +11,6 @@ import (
 func main() {
 	env.Load()
 
-	// TODO: improve this
-
 	for {
 		latest, err := internal.GetLatestChangesetId()
 		if err != nil {
