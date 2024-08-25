@@ -1,5 +1,10 @@
+.PHONY: install build build-all linux-amd64
+
 install:
-	go mod tidy
+	go mod download
+
+build:
+	go build -ldflags "-s -w" -o build/osm-bot cmd/main.go
 
 build-all: linux-amd64
 
